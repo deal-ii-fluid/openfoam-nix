@@ -1,0 +1,73 @@
+diff --git a/etc/bashrc b/etc/bashrc
+index dd12bfd473..f4ff5a2db2 100644
+--- a/etc/bashrc
++++ b/etc/bashrc
+@@ -42,12 +42,7 @@ export WM_PROJECT_VERSION=11
+ #
+ # Please set to the appropriate path if the default is not correct.
+ #
+-[ "$BASH" -o "$ZSH_NAME" ] && \
+-export FOAM_INST_DIR=$(cd $(dirname ${BASH_SOURCE:-$0})/../.. && pwd -P) || \
+-export FOAM_INST_DIR=$HOME/$WM_PROJECT
+-# export FOAM_INST_DIR=~$WM_PROJECT
+-# export FOAM_INST_DIR=/opt/$WM_PROJECT
+-# export FOAM_INST_DIR=/usr/local/$WM_PROJECT
++export FOAM_INST_DIR=CHANGEME
+ #
+ # END OF (NORMAL) USER EDITABLE PART
+ ################################################################################
+@@ -180,13 +175,13 @@ cleaned=`$foamClean "$MANPATH" "$foamOldDirs"` && MANPATH="$cleaned"
+ export PATH LD_LIBRARY_PATH MANPATH
+ 
+ 
+-# Source project setup files
++echo -- Source project setup files
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~
+ _foamSource $WM_PROJECT_DIR/etc/config.sh/settings
+ _foamSource $WM_PROJECT_DIR/etc/config.sh/aliases
+ 
+ 
+-# Source user setup files for optional packages
++echo -- Source user setup files for optional packages
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ _foamSource `$WM_PROJECT_DIR/bin/foamEtcFile config.sh/mpi`
+ _foamSource `$WM_PROJECT_DIR/bin/foamEtcFile config.sh/paraview`
+@@ -194,7 +189,7 @@ _foamSource `$WM_PROJECT_DIR/bin/foamEtcFile config.sh/ensight`
+ _foamSource `$WM_PROJECT_DIR/bin/foamEtcFile config.sh/gperftools`
+ 
+ 
+-# Clean environment paths again. Only remove duplicates
++echo -- Clean environment paths again. Only remove duplicates
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ #- Clean PATH
+ cleaned=`$foamClean "$PATH"` && PATH="$cleaned"
+@@ -215,7 +210,7 @@ then
+ fi
+ 
+ 
+-# Cleanup environment:
++echo -- Cleanup environment:
+ # ~~~~~~~~~~~~~~~~~~~~
+ unset cleaned foamClean foamOldDirs
+ 
+@@ -226,6 +221,6 @@ unset cleaned foamClean foamOldDirs
+ 
+ # Source the bash completion file:
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-[ "$BASH" ] && . $WM_PROJECT_DIR/etc/config.sh/bash_completion
++[ "$BASH" ] && . $WM_PROJECT_DIR/etc/config.sh/bash_completion || true
+ 
+ #------------------------------------------------------------------------------
+diff --git a/etc/config.sh/aliases b/etc/config.sh/aliases
+index 2d7dd47c06..91fb4db0b9 100644
+--- a/etc/config.sh/aliases
++++ b/etc/config.sh/aliases
+@@ -76,7 +76,7 @@ if command -V wmRefresh 2> /dev/null | head -1 | grep -q "function"
+ then
+     unset wmRefresh
+ else
+-    unalias wmRefresh 2> /dev/null
++    unalias wmRefresh 2> /dev/null || true
+ fi
+ 
+ wmRefresh()
