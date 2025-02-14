@@ -18,31 +18,36 @@
 , coreutils
 , gnused
 , findutils
+, versionInfo
+, pkgs
 }:
+
+with pkgs;
+
 stdenv.mkDerivation rec {
-  version = "11";
+  version = lib.removePrefix "OpenFOAM-" versionInfo.OpenFOAM.name;
   name = "openfoam-${version}";
 
   srcs = [
     (fetchFromGitHub {
-      owner = "OpenFOAM";
-      repo = "OpenFOAM-${version}";
-      rev = "c46b322d5bf43cdd6a9dd99737a8798df290c537";
-      sha256 = "sha256-3g5pqgsKvbMCf5Yrbo0B38ns4XZsq1/fl7ht1YLs1vs=";
-      name = "OpenFOAM-${version}";
+      owner = versionInfo.OpenFOAM.owner;
+      repo = versionInfo.OpenFOAM.repo;
+      rev = versionInfo.OpenFOAM.rev;
+      sha256 = lib.removePrefix "sha256-" versionInfo.OpenFOAM.sha256;
+      name = versionInfo.OpenFOAM.name;
     })
     (fetchFromGitHub {
-      owner = "OpenFOAM";
-      repo = "ThirdParty-${version}";
-      rev = "f379fadb73ceb5cb92d5d5379eb64b1dc956ab4f";
-      sha256 = "sha256-HtyKoNtjT119aun/VS3xrtGMt2d2h3bHQK10shhNEyU=";
-      name = "ThirdParty-${version}";
+      owner = versionInfo.ThirdParty.owner;
+      repo = versionInfo.ThirdParty.repo;
+      rev = versionInfo.ThirdParty.rev;
+      sha256 = lib.removePrefix "sha256-" versionInfo.ThirdParty.sha256;
+      name = versionInfo.ThirdParty.name;
     })
   ];
 
   # FIXME using $out in the bashrc breaks the runtime bashrc. Use the real path in the store instead
   patches = [ ./fix-config.patch ];
-  sourceRoot = "OpenFOAM-${version}";
+  sourceRoot = versionInfo.OpenFOAM.name;
 
 
   buildPhase = ''
@@ -51,18 +56,18 @@ stdenv.mkDerivation rec {
     sed -ie "s|CHANGEME|$out|" etc/bashrc
 
     # Reproduce the hirearchy with ThirdParty in the out dir
-    mkdir -p $out/OpenFOAM-${version}
-    cp -r ./* $out/OpenFOAM-${version}
-    mkdir -p $out/ThirdParty-${version}
-    cp -r ../ThirdParty-${version}/* $out/ThirdParty-${version}
+    mkdir -p $out/${versionInfo.OpenFOAM.name}
+    cp -r ./* $out/${versionInfo.OpenFOAM.name}
+    mkdir -p $out/${versionInfo.ThirdParty.name}
+    cp -r ../${versionInfo.ThirdParty.name}/* $out/${versionInfo.ThirdParty.name}
     echo "All source copied!"
-    cd $out/OpenFOAM-${version}
+    cd $out/${versionInfo.OpenFOAM.name}
 
     source etc/bashrc
     echo Build dir is: $WM_PROJECT_DIR
 
     # Fix compilation issues
-    chmod +w ../ThirdParty-${version}/scotch_*/src
+    chmod +w ../${versionInfo.ThirdParty.name}/scotch_*/src
 
     export WM_NCOMPPROCS="$NIX_BUILD_CORES"
     export PATH=$PATH:$PWD/wmake
@@ -77,25 +82,28 @@ stdenv.mkDerivation rec {
   # fill bin proper up with wrappers that source etc/bashrc for everything in platform/$WM_OPTIONS/bin
   # add -mpi suffixed versions that calls proper mpirun for those with libPstream.so depencies too
   installPhase = ''
-    echo "copying etc, bin, and platforms directories to $out/lib/OpenFOAM-${version}"
-    cd $out/OpenFOAM-${version}
-    mkdir -p "$out/lib/OpenFOAM-${version}"
-    cp -at "$out/lib/OpenFOAM-${version}" etc bin platforms tutorials applications
-    echo "creating a bin of wrapped binaries from $out/lib/OpenFOAM-${version}/platforms/$WM_OPTIONS/bin"
-    for program in "$out/lib/OpenFOAM-${version}/{platforms/$WM_OPTIONS,tools}/bin/"*; do
+    echo "copying etc, bin, and platforms directories to $out/lib/${versionInfo.OpenFOAM.name}"
+    cd $out/${versionInfo.OpenFOAM.name}
+    mkdir -p "$out/lib/${versionInfo.OpenFOAM.name}"
+    cp -at "$out/lib/${versionInfo.OpenFOAM.name}" etc bin platforms tutorials applications
+    echo "creating a bin of wrapped binaries from $out/lib/${versionInfo.OpenFOAM.name}/platforms/$WM_OPTIONS/bin"
+    for program in "$out/lib/${versionInfo.OpenFOAM.name}/{platforms/$WM_OPTIONS,tools}/bin/"*; do
       makeWrapper "$program" "$out/bin/''${program##*/}" \
-        --run "source \"$out/lib/OpenFOAM-${version}/etc/bashrc\""
+        --run "source \"$out/lib/${versionInfo.OpenFOAM.name}/etc/bashrc\"" \
         --run "PATH=$PATH:${coreutils}/bin:${findutils}/bin:${gnused}/bin"
       if readelf -d "$program" | fgrep -q libPstream.so; then
         makeWrapper "${openmpi}/bin/mpirun" "$out/bin/''${program##*/}-mpi" \
           --run "[ -r processor0 ] || { echo \"Case is not currently decomposed, see decomposePar documentation\"; exit 1; }" \
           --run "extraFlagsArray+=(-n \"\$(ls -d processor* | wc -l)\" \"$out/bin/''${program##*/}\" -parallel)" \
-          --run "source \"$out/lib/OpenFOAM-${version}/etc/bashrc\""
+          --run "source \"$out/lib/${versionInfo.OpenFOAM.name}/etc/bashrc\""
       fi
     done
   '';
 
-  nativeBuildInputs = [
+  buildInputs = [
+    ensureNewerSourcesForZipFilesHook
+    gnumake
+    m4
     makeWrapper
     flex
     bison
@@ -106,8 +114,6 @@ stdenv.mkDerivation rec {
     gperftools
     metis
     scotch
-    # Avoid ZIP unpack error because of zeroed timestamp
-    ensureNewerSourcesForZipFilesHook
   ];
 
   meta = with lib; {

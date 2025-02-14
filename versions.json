@@ -1,1 +1,50 @@
- 
+{
+  "openfoam-9": {
+    "OpenFOAM": {
+      "owner": "OpenFOAM",
+      "repo": "OpenFOAM-9",
+      "rev": "d87800e1bde07696061acb231ec68df126a937cc",
+      "sha256": "sha256-wcC6gcSrVqEsvP16002/pDNAZvZXBfoMiqvUisgMsFI=",
+      "name": "OpenFOAM-9"
+    },
+    "ThirdParty": {
+      "owner": "OpenFOAM",
+      "repo": "ThirdParty-9",
+      "rev": "c2955cc9ce7604007795fd63d610ffc9fcb9c7e2",
+      "sha256": "sha256-jOrtmzaEd2Y0zYJkTpYisLAHJuKuhibfGitfuciul4o=",
+      "name": "ThirdParty-9"
+    }
+  },
+  "openfoam-10": {
+    "OpenFOAM": {
+      "owner": "OpenFOAM",
+      "repo": "OpenFOAM-10",
+      "rev": "89f925dc708d068f84f51e8317e3bebcda64f5cb",
+      "sha256": "sha256-pD0u58vH9LQXf8Ad9EZdpUKGKjRSTTkBfsO7pOTt+BE=",
+      "name": "OpenFOAM-10"
+    },
+    "ThirdParty": {
+      "owner": "OpenFOAM",
+      "repo": "ThirdParty-10",
+      "rev": "ae545a01baf66780285a2015da8a23c0a2dda5de",
+      "sha256": "sha256-Xr+We8O5/Ex8DnRP5BpmQ4x8FPVUKbssUSNRoMApHoM=",
+      "name": "ThirdParty-10"
+    }
+  },
+  "openfoam-11": {
+    "OpenFOAM": {
+      "owner": "OpenFOAM",
+      "repo": "OpenFOAM-11",
+      "rev": "9cbf94f3339dd49286633b303c4155fd10ea8200",
+      "sha256": "sha256-AUApKWg9YZ0Nmz8+pOcgu6RBPfGHk0X49lERFEiV0ZM=",
+      "name": "OpenFOAM-11"
+    },
+    "ThirdParty": {
+      "owner": "OpenFOAM",
+      "repo": "ThirdParty-11",
+      "rev": "f379fadb73ceb5cb92d5d5379eb64b1dc956ab4f",
+      "sha256": "sha256-HtyKoNtjT119aun/VS3xrtGMt2d2h3bHQK10shhNEyU=",
+      "name": "ThirdParty-11"
+    }
+  }
+} 

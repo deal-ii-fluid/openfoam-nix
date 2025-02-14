@@ -5,8 +5,8 @@ set -x
 source $WM_PROJECT_DIR/etc/bashrc
 
 id
-cd $HOME
-cp -r $WM_PROJECT_DIR/tutorials/incompressibleFluid/motorBike .
+#cd $HOME
+#cp -r $WM_PROJECT_DIR/tutorials/incompressibleFluid/motorBike .
 cd motorBike/motorBike
 chmod +rw .
 mkdir -p constant/geometry
