@@ -2,17 +2,25 @@
   description = "OpenFOAM Project Flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # 或根据需要选择合适的版本
-    nixpkgs-2305.url = "github:NixOS/nixpkgs/nixos-23.05";  # 添加 23.05 版本
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-2305.url = "github:NixOS/nixpkgs/nixos-23.05";
+    # 添加特定版本的 nixpkgs 用于 gcc/gfortran
+    nixpkgs-specific.url = "github:NixOS/nixpkgs/70bdadeb94ffc8806c0570eb5c2695ad29f0e421";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-2305 }:
+  outputs = { self, nixpkgs-unstable, nixpkgs-2305, nixpkgs-specific }:
     let
       supportedSystems = [ "x86_4-linux" "aarch64-linux" ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      overlay = import ./overlays.nix;
-      versions = builtins.fromJSON (builtins.readFile ./versions.json); # 读取 versions.json
-      solids4foamVersions = builtins.fromJSON (builtins.readFile ./solids4foam_versions.json);
+      forAllSystems = nixpkgs-unstable.lib.genAttrs supportedSystems;
+      overlay = import ./nix/overlays.nix;
+      versions = builtins.fromJSON (builtins.readFile ./versions/versions.json);
+      solids4foamVersions = builtins.fromJSON (builtins.readFile ./versions/solids4foam_versions.json);
+
+      # 添加特定版本的 nixpkgs
+      pkgs-specific = forAllSystems (system: import nixpkgs-specific {
+        inherit system;
+        config.allowUnfree = true;
+      });
 
       # 添加 nixpkgs-2305
       pkgs-2305 = forAllSystems (system: import nixpkgs-2305 {
@@ -23,12 +31,12 @@
       # 辅助函数：创建 precice-openfoam-adapter 包
       makePreciceAdapter = system: openfoamPkg: 
         let
-          pkgs = import nixpkgs {
+          pkgs = import nixpkgs-unstable {
             inherit system;
             overlays = [ overlay ];
             config.allowUnfree = true;
           };
-        in pkgs.callPackage ./openfoam-adapter.nix {
+        in pkgs.callPackage ./nix/openfoam-adapter.nix {
           openfoam = openfoamPkg;
           precice = pkgs-2305.${system}.precice;
         };
@@ -36,37 +44,48 @@
       # 辅助函数：创建 solids4foam 包
       makeSolids4Foam = system: openfoamPkg: versionKey:
         let
-          pkgs = import nixpkgs {
+          pkgs = import nixpkgs-unstable {
             inherit system;
             overlays = [ overlay ];
             config.allowUnfree = true;
           };
           versionInfo = solids4foamVersions.${versionKey};
-        in pkgs.callPackage ./openfoam-solids4foam.nix {
+        in pkgs.callPackage ./nix/openfoam-solids4foam.nix {
           inherit openfoamPkg versionInfo;
         };
 
     in {
       packages = forAllSystems (system: 
         let
-          pkgs = import nixpkgs {
+          pkgs = import nixpkgs-unstable {
             inherit system;
             overlays = [ overlay ];
             config.allowUnfree = true;
           };
           
+          # 使用 nixpkgs-2305 的包
+          pkgs-2305 = import nixpkgs-2305 {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          
           # 创建工具箱包
-          toolbox = pkgs.callPackage ./toolbox.nix {};
+          openfoamToolbox = pkgs.callPackage ./nix/toolbox.nix {};
+          
+          # 创建 calculix-adapter 包，使用特定版本的编译器和依赖
+          preciceCalculixAdapter = pkgs.callPackage ./nix/calculix-adapter.nix {
+            inherit (pkgs-specific.${system}) gcc gfortran spooles arpack lapack blas libyamlcpp precice openmpi pkg-config;
+          };
           
           # 创建 OpenFOAM 包
           makeOpenFOAM = versionName: versionInfo:
-            pkgs.callPackage ./openfoam.nix {
+            pkgs.callPackage ./nix/openfoam.nix {
               stdenv = pkgs.ccacheStdenv;
               versionInfo = versionInfo;
             };
           
           # 创建基础 OpenFOAM 包
-          openfoamPkgs = nixpkgs.lib.mapAttrs makeOpenFOAM versions;
+          openfoamPkgs = nixpkgs-unstable.lib.mapAttrs makeOpenFOAM versions;  # 更新引用
           
           # 创建 precice-openfoam-adapter 包
           preciceAdapterPkgs = builtins.listToAttrs (map (version: {
@@ -81,7 +100,7 @@
           }) ["9" "10" "11"]);
         in
           openfoamPkgs // preciceAdapterPkgs // solids4foamPkgs // {
-            inherit toolbox;  # 添加工具箱包
+            inherit openfoamToolbox preciceCalculixAdapter;
           }
       );
 
@@ -90,13 +109,14 @@
       );
 
       devShells = forAllSystems (system: let
-        pkgs = import nixpkgs {
+        pkgs = import nixpkgs-unstable {
           inherit system;
           overlays = [ overlay ];
           config.allowUnfree = true;
         };
         
-        toolbox = self.packages.${system}.toolbox;
+        openfoamToolbox = self.packages.${system}.openfoamToolbox;
+        preciceCalculixAdapter = self.packages.${system}.preciceCalculixAdapter;
         
         # 创建带工具箱的 OpenFOAM 开发环境
         makeDevShellWithTools = versionName: versionInfo: let
@@ -104,7 +124,7 @@
         in pkgs.mkShell {
           buildInputs = [
             openfoamPackage
-            toolbox  # 添加工具箱
+            openfoamToolbox  # 添加工具箱
           ];
 
           shellHook = ''
@@ -162,9 +182,9 @@
         makePreciceDevShell = versionName: versionInfo: let
           version = builtins.substring 9 2 versionName;
           openfoamPackage = self.packages.${system}.${versionName};
-          adapterPackage = pkgs.callPackage ./openfoam-adapter.nix {
+          adapterPackage = pkgs.callPackage ./nix/openfoam-adapter.nix {
             openfoam = openfoamPackage;
-            precice = pkgs-2305.${system}.precice;  # 使用 23.05 的 precice
+            precice = pkgs-2305.${system}.precice;
           };
           inherit (pkgs) lib;
         in pkgs.mkShell {
@@ -221,7 +241,7 @@
         makeSolids4FoamDevShell = versionName: let
           version = builtins.substring 9 2 versionName;
           openfoamPackage = self.packages.${system}.${versionName};
-          solids4foamPackage = pkgs.callPackage ./openfoam-solids4foam.nix {
+          solids4foamPackage = pkgs.callPackage ./nix/openfoam-solids4foam.nix {
             openfoam = openfoamPackage;
             versionInfo = solids4foamVersions."v${version}";
             inherit (pkgs.ocamlPackages) bigarray;
@@ -255,9 +275,20 @@
             echo "  SOLIDS4FOAM_DIR    = $SOLIDS4FOAM_DIR"
           '';
         };
+
+        # 创建 calculix-adapter 开发环境
+        makeCalculixAdapterDevShell = pkgs.mkShell {
+          buildInputs = [
+            preciceCalculixAdapter
+          ];
+          
+          shellHook = ''
+            echo "CalculiX-adapter 开发环境已设置"
+          '';
+        };
       in
         # 生成所有版本的开发环境
-        (nixpkgs.lib.mapAttrs makeDevShellWithTools versions) // {
+        (nixpkgs-unstable.lib.mapAttrs makeDevShellWithTools versions) // {
           # 为每个 OpenFOAM 版本创建对应的 precice adapter 环境
           "precice-openfoam-9" = makePreciceDevShell "openfoam-9" versions.openfoam-9;
           "precice-openfoam-10" = makePreciceDevShell "openfoam-10" versions.openfoam-10;
@@ -268,12 +299,15 @@
           
           # 添加纯工具箱环境
           "openfoam-toolbox" = pkgs.mkShell {
-            buildInputs = [ toolbox ];
+            buildInputs = [ openfoamToolbox ];
             
             shellHook = ''
               echo "OpenFOAM 开发工具箱环境已设置"
             '';
           };
+          
+          # 添加 calculix-adapter 环境
+          "calculix-adapter" = makeCalculixAdapterDevShell;
         } // {
           # 为每个 OpenFOAM 版本创建对应的 solids4foam 环境
           "solids4foam-9" = makeSolids4FoamDevShell "openfoam-9";

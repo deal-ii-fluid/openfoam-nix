@@ -14,7 +14,7 @@
 
 let
   # 读取 solids4foam_versions.json
-  solids4foamVersions = builtins.fromJSON (builtins.readFile ./solids4foam_versions.json);
+  solids4foamVersions = builtins.fromJSON (builtins.readFile ../versions/solids4foam_versions.json);
 
   # 从 openfoam 包名中获取版本号
   ofVersion = builtins.substring 9 2 openfoam.name;

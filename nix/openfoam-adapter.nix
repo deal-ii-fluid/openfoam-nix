@@ -12,7 +12,7 @@
 
 let
   # 读取 adapter_versions.json
-  adapterVersions = builtins.fromJSON (builtins.readFile ./adapter_versions.json);
+  adapterVersions = builtins.fromJSON (builtins.readFile ../versions/adapter_versions.json);
 
   # 从 openfoam 包名中获取版本号
   ofVersion = builtins.substring 9 2 openfoam.name;
