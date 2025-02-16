@@ -18,20 +18,45 @@
         inherit system;
         config.allowUnfree = true;
       });
-    in {
-      packages = forAllSystems (system: let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ overlay ];
-          config.allowUnfree = true;
-        };
-        makeOpenFOAM = versionName: versionInfo:
-          pkgs.callPackage ./openfoam.nix {
-            stdenv = pkgs.ccacheStdenv;
-            versionInfo = versionInfo;
+
+      # 辅助函数：创建 precice-openfoam-adapter 包
+      makePreciceAdapter = system: openfoamPkg: 
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ overlay ];
+            config.allowUnfree = true;
           };
-      in
-        nixpkgs.lib.mapAttrs makeOpenFOAM versions
+        in pkgs.callPackage ./openfoam-adapter.nix {
+          openfoam = openfoamPkg;
+          precice = pkgs-2305.${system}.precice;
+        };
+    in {
+      packages = forAllSystems (system: 
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ overlay ];
+            config.allowUnfree = true;
+          };
+          
+          # 创建 OpenFOAM 包
+          makeOpenFOAM = versionName: versionInfo:
+            pkgs.callPackage ./openfoam.nix {
+              stdenv = pkgs.ccacheStdenv;
+              versionInfo = versionInfo;
+            };
+          
+          # 创建基础 OpenFOAM 包
+          openfoamPkgs = nixpkgs.lib.mapAttrs makeOpenFOAM versions;
+          
+          # 创建 precice-openfoam-adapter 包
+          preciceAdapterPkgs = builtins.listToAttrs (map (version: {
+            name = "precice-openfoam-${version}";
+            value = makePreciceAdapter system openfoamPkgs."openfoam-${version}";
+          }) ["9" "10" "11"]);
+        in
+          openfoamPkgs // preciceAdapterPkgs
       );
 
       defaultPackage = forAllSystems (system:

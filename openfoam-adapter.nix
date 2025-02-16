@@ -44,15 +44,44 @@ stdenv.mkDerivation rec {
     source ${openfoam}/OpenFOAM-${ofVersion}/etc/bashrc
 
     # 设置构建环境
+    export FOAM_USER_LIBBIN="$PWD/platforms/$WM_OPTIONS/lib"
+    export ADAPTER_TARGET_DIR="$FOAM_USER_LIBBIN"
     export ADAPTER_PREP_FLAGS="${lib.optionalString debugMode "-DADAPTER_DEBUG_MODE"} ${lib.optionalString enableTimings "-DADAPTER_ENABLE_TIMINGS"}"
+
+    # 创建目标目录
+    mkdir -p $ADAPTER_TARGET_DIR
+
+    # 确保 MPI 库可用
+    export FOAM_MPI=openmpi-system
+    export FOAM_MPI_LIBBIN=$FOAM_LIBBIN/$FOAM_MPI
+    export LD_LIBRARY_PATH="${openfoam}/OpenFOAM-${ofVersion}/platforms/$WM_OPTIONS/lib:${openfoam}/OpenFOAM-${ofVersion}/platforms/$WM_OPTIONS/lib/$FOAM_MPI:$LD_LIBRARY_PATH"
 
     # 运行构建
     ./Allwmake -j -q
   '';
 
   installPhase = ''
-    mkdir -p $out/{lib,share}
-    cp /tmp/OpenFOAM-${ofVersion}/platforms/$WM_OPTIONS/lib/libpreciceAdapterFunctionObject.so $out/lib/
+    mkdir -p $out/lib
+    # 复制主库文件
+    cp platforms/$WM_OPTIONS/lib/libpreciceAdapterFunctionObject.so $out/lib/
+    
+    # 复制 libPstream.so
+    cp ${openfoam}/OpenFOAM-${ofVersion}/platforms/$WM_OPTIONS/lib/openmpi-system/libPstream.so $out/lib/
+  '';
+
+  # 添加运行时依赖
+  propagatedBuildInputs = [
+    openfoam
+    precice
+    openmpi
+  ];
+
+  # 设置 RPATH
+  postFixup = let
+    ofLibDir = "${openfoam}/OpenFOAM-${ofVersion}/platforms/linuxArm64GccDPInt32Opt/lib";
+  in ''
+    patchelf --set-rpath "\$ORIGIN:${ofLibDir}:${lib.makeLibraryPath propagatedBuildInputs}" \
+      $out/lib/libpreciceAdapterFunctionObject.so
   '';
 
   meta = {
