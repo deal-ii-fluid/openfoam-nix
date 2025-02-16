@@ -1,0 +1,20 @@
+{
+  "OpenFOAM9": {
+    "owner": "jiaqiwang969",
+    "repo": "solids4foam",
+    "rev": "6168a496a92d049060ae41baf90a9d978dc7f17f",
+    "sha256": "sha256-GYbae8k77nJ/yPqK3sMHub2aTgAQweO8dw6oQYVCZ7M="
+  },
+  "OpenFOAM10": {
+    "owner": "jiaqiwang969",
+    "repo": "solids4foam", 
+    "rev": "commit-hash-for-v10",
+    "sha256": "sha256-hash-for-v10"
+  },
+  "OpenFOAM11": {
+    "owner": "jiaqiwang969",
+    "repo": "solids4foam",
+    "rev": "commit-hash-for-v11",
+    "sha256": "sha256-hash-for-v11"
+  }
+} 

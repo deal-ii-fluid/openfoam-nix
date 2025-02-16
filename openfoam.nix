@@ -134,6 +134,8 @@ export WM_COMPILE_OPTION=Opt
 export WM_LABEL_OPTION=Int32
 export WM_LABEL_SIZE=32
 export WM_PRECISION_OPTION=DP
+export WM_LINK_LANGUAGE=c++
+export WM_ARCH_OPTION=64
 
 # 架构和选项设置
 export WM_ARCH=linuxArm64
@@ -286,6 +288,53 @@ EOL
     fi
 
     echo "=== Completed installPhase for OpenFOAM-${version} ==="
+  '';
+
+  postFixup = ''
+    # 创建环境变量设置脚本
+    mkdir -p $out/bin
+    cat > $out/bin/set-openfoam-vars <<EOF
+    #!/bin/sh
+    export WM_PROJECT=OpenFOAM
+    export WM_PROJECT_VERSION=${version}
+    export FOAM_INST_DIR=$out
+    export WM_COMPILER=Gcc
+    export WM_COMPILER_TYPE=system
+    export WM_COMPILE_OPTION=Opt
+    export WM_PRECISION_OPTION=DP
+    export WM_LABEL_SIZE=32
+    export WM_COMPILE_OPTION=Opt
+    export WM_PROJECT_DIR=\$FOAM_INST_DIR/OpenFOAM-\$WM_PROJECT_VERSION
+    export WM_OSTYPE=POSIX        # 明确指定 POSIX
+    export FOAM_SIGFPE=
+    export FOAM_BASH=\$WM_PROJECT_DIR/etc/bashrc
+    export FOAM_SRC=\$WM_PROJECT_DIR/src
+    export FOAM_APP=\$WM_PROJECT_DIR/applications
+    export FOAM_TUTORIALS=\$WM_PROJECT_DIR/tutorials
+    export FOAM_UTILITIES=\$FOAM_APP/utilities
+    export FOAM_SOLVERS=\$FOAM_APP/solvers
+    export FOAM_RUN=\$WM_PROJECT_DIR/run
+    export FOAM_LIBBIN=\$FOAM_INST_DIR/lib
+    export FOAM_APPBIN=\$FOAM_INST_DIR/bin
+    export FOAM_ETC=\$WM_PROJECT_DIR/etc
+    export FOAM_SETTINGS=
+    export WM_ARCH=\$(uname -m)
+    export WM_ARCH_OPTION=
+    export WM_DIR=\$WM_PROJECT_DIR/wmake
+    export WM_LINK_LANGUAGE=c++
+    export WM_OPTIONS=\$WM_ARCH\$WM_COMPILER\$WM_PRECISION_OPTION\$WM_LABEL_SIZE\$WM_COMPILE_OPTION
+    export FOAM_EXT_LIBBIN=\$WM_THIRD_PARTY_DIR/platforms/\$WM_OPTIONS/lib
+    export LD_LIBRARY_PATH=\$FOAM_LIBBIN:\$FOAM_EXT_LIBBIN:\$LD_LIBRARY_PATH
+    export PATH=\$FOAM_APPBIN:\$WM_DIR:\$PATH
+    EOF
+    chmod +x $out/bin/set-openfoam-vars
+
+    # 为 fish shell 创建环境变量设置脚本
+    cat > $out/bin/set-openfoam-vars.fish <<EOF
+    #!/usr/bin/env fish
+    // ... fish script content ...
+    EOF
+    chmod +x $out/bin/set-openfoam-vars.fish
   '';
 
   buildInputs = [

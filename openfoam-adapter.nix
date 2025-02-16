@@ -55,7 +55,8 @@ stdenv.mkDerivation rec {
     export FOAM_MPI=openmpi-system
     export FOAM_MPI_LIBBIN=$FOAM_LIBBIN/$FOAM_MPI
     export LD_LIBRARY_PATH="${openfoam}/OpenFOAM-${ofVersion}/platforms/$WM_OPTIONS/lib:${openfoam}/OpenFOAM-${ofVersion}/platforms/$WM_OPTIONS/lib/$FOAM_MPI:$LD_LIBRARY_PATH"
-
+   
+    patchShebangs --build $PWD
     # 运行构建
     ./Allwmake -j -q
   '';

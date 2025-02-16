@@ -8,10 +8,11 @@
 
   outputs = { self, nixpkgs, nixpkgs-2305 }:
     let
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
+      supportedSystems = [ "x86_4-linux" "aarch64-linux" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       overlay = import ./overlays.nix;
       versions = builtins.fromJSON (builtins.readFile ./versions.json); # 读取 versions.json
+      solids4foamVersions = builtins.fromJSON (builtins.readFile ./solids4foam_versions.json);
 
       # 添加 nixpkgs-2305
       pkgs-2305 = forAllSystems (system: import nixpkgs-2305 {
@@ -31,6 +32,20 @@
           openfoam = openfoamPkg;
           precice = pkgs-2305.${system}.precice;
         };
+
+      # 辅助函数：创建 solids4foam 包
+      makeSolids4Foam = system: openfoamPkg: versionKey:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ overlay ];
+            config.allowUnfree = true;
+          };
+          versionInfo = solids4foamVersions.${versionKey};
+        in pkgs.callPackage ./openfoam-solids4foam.nix {
+          inherit openfoamPkg versionInfo;
+        };
+
     in {
       packages = forAllSystems (system: 
         let
@@ -39,6 +54,9 @@
             overlays = [ overlay ];
             config.allowUnfree = true;
           };
+          
+          # 创建工具箱包
+          toolbox = pkgs.callPackage ./toolbox.nix {};
           
           # 创建 OpenFOAM 包
           makeOpenFOAM = versionName: versionInfo:
@@ -55,8 +73,16 @@
             name = "precice-openfoam-${version}";
             value = makePreciceAdapter system openfoamPkgs."openfoam-${version}";
           }) ["9" "10" "11"]);
+
+          # 创建 solids4foam 包
+          solids4foamPkgs = builtins.listToAttrs (map (version: {
+            name = "solids4foam-${version}";
+            value = makeSolids4Foam system openfoamPkgs."openfoam-${version}" "v${version}";
+          }) ["9" "10" "11"]);
         in
-          openfoamPkgs // preciceAdapterPkgs
+          openfoamPkgs // preciceAdapterPkgs // solids4foamPkgs // {
+            inherit toolbox;  # 添加工具箱包
+          }
       );
 
       defaultPackage = forAllSystems (system:
@@ -70,6 +96,25 @@
           config.allowUnfree = true;
         };
         
+        toolbox = self.packages.${system}.toolbox;
+        
+        # 创建带工具箱的 OpenFOAM 开发环境
+        makeDevShellWithTools = versionName: versionInfo: let
+          openfoamPackage = self.packages.${system}.${versionName};
+        in pkgs.mkShell {
+          buildInputs = [
+            openfoamPackage
+            toolbox  # 添加工具箱
+          ];
+
+          shellHook = ''
+            source ${openfoamPackage}/bin/set-openfoam-vars
+            
+            echo "OpenFOAM $WM_PROJECT_VERSION 开发环境已设置"
+            echo "包含常用开发工具"
+          '';
+        };
+
         # 基础 OpenFOAM 开发环境
         makeDevShell = versionName: versionInfo: let
           version = builtins.substring 9 2 versionName;
@@ -171,16 +216,69 @@
             ''}
           '';
         };
+
+        # 创建 solids4foam 开发环境
+        makeSolids4FoamDevShell = versionName: let
+          version = builtins.substring 9 2 versionName;
+          openfoamPackage = self.packages.${system}.${versionName};
+          solids4foamPackage = pkgs.callPackage ./openfoam-solids4foam.nix {
+            openfoam = openfoamPackage;
+            versionInfo = solids4foamVersions."v${version}";
+            inherit (pkgs.ocamlPackages) bigarray;
+          };
+        in pkgs.mkShell {
+          buildInputs = with pkgs; [
+            openfoamPackage
+            solids4foamPackage
+            paraview
+            gnumake
+            cmake
+            gcc
+            gdb
+          ];
+
+          shellHook = ''
+            # 检测当前 shell 类型并相应地 source 环境变量
+            if test -n "$FISH_VERSION"
+            then
+              source ${openfoamPackage}/bin/set-openfoam-vars.fish
+            else
+              source ${openfoamPackage}/bin/set-openfoam-vars
+            fi
+            
+            # 设置 solids4foam 环境变量
+            export SOLIDS4FOAM_DIR=${solids4foamPackage}
+            export LD_LIBRARY_PATH=${solids4foamPackage}/lib:$LD_LIBRARY_PATH
+            
+            echo "OpenFOAM-solids4foam 环境已设置:"
+            echo "  WM_PROJECT_DIR     = $WM_PROJECT_DIR"
+            echo "  SOLIDS4FOAM_DIR    = $SOLIDS4FOAM_DIR"
+          '';
+        };
       in
         # 生成所有版本的开发环境
-        (nixpkgs.lib.mapAttrs makeDevShell versions) // {
+        (nixpkgs.lib.mapAttrs makeDevShellWithTools versions) // {
           # 为每个 OpenFOAM 版本创建对应的 precice adapter 环境
           "precice-openfoam-9" = makePreciceDevShell "openfoam-9" versions.openfoam-9;
           "precice-openfoam-10" = makePreciceDevShell "openfoam-10" versions.openfoam-10;
           "precice-openfoam-11" = makePreciceDevShell "openfoam-11" versions.openfoam-11;
           
           # 默认环境
-          default = makeDevShell "openfoam-11" versions.openfoam-11;
+          default = makeDevShellWithTools "openfoam-11" versions.openfoam-11;
+          
+          # 添加纯工具箱环境
+          "openfoam-toolbox" = pkgs.mkShell {
+            buildInputs = [ toolbox ];
+            
+            shellHook = ''
+              echo "OpenFOAM 开发工具箱环境已设置"
+            '';
+          };
+        } // {
+          # 为每个 OpenFOAM 版本创建对应的 solids4foam 环境
+          "solids4foam-9" = makeSolids4FoamDevShell "openfoam-9";
+          "solids4foam-10" = makeSolids4FoamDevShell "openfoam-10";
+          "solids4foam-11" = makeSolids4FoamDevShell "openfoam-11";
         }
       );
 
