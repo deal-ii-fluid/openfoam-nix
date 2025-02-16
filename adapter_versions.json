@@ -28,12 +28,12 @@
     "rev": "e9b6e41236177d04441ea6af47b9cf74970d8f03"
   },
   "OpenFOAM10": {
-    "hash": "sha256-ZxYmcUNSUZh9C8D9nSzUlEba1osZg6+LR/31BPKqSWk=",
-    "rev": "d53753b1c927b2413b02299c9da15725b3e772f0"
+    "hash": "sha256-+Aj0GxfLjF6P2IurWugaeTr2On1IPaAuqLz/uM4zk+s=",
+    "rev": "22d86c54cb72d4943448c23bdafc843a1bc32fcd"
   },
   "OpenFOAM9": {
-    "hash": "sha256-C1B1WYct/VRwEBGJp7suCU4z1ymBcjIfBOBiAhrHy1c=",
-    "rev": "a2885806836a4f516abce0be52128aa5083320fe"
+    "hash": "sha256-5pq7Bon7wZREHMd5uKT5cEhnXBiizECbstpzmAeRrz0=",
+    "rev": "9bf0284bc4055de67b37608effb0214a2fe2ec48"
   },
   "OpenFOAM8": {
     "hash": "sha256-Pabdmp1OvjFowcRKrkNyVsWEbVcTbZUtDOk+S4zSRjw=",

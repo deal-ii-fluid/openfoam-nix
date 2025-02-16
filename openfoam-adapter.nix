@@ -28,7 +28,7 @@ stdenv.mkDerivation rec {
 
   src = fetchFromGitHub {
     inherit (versionInfo) rev hash;
-    owner = "precice";
+    owner = "deal-ii-fluid";
     repo = "openfoam-adapter";
   };
 
