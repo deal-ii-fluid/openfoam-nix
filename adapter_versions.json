@@ -1,0 +1,78 @@
+{
+  "develop": {
+    "hash": "sha256-1gIOzRZwxGje2Ymp2pNBlLJrPcp1cCP9gnzduUepZDw=",
+    "rev": "a672e2c33b0403ac8e9597d4dd844d29db8e3a21"
+  },
+  "general-read-write": {
+    "hash": "sha256-LF5+YrmLjabF9Y/ZJs+43qfq7l2clx9XKN2wp4trMO8=",
+    "rev": "f2b699ba6b335211ca7fa7ad6935d43afa2c3ee2"
+  },
+  "master": {
+    "hash": "sha256-BKh8FJ3ZPbvTr8ln6n+7zFIpDsGTpHEuFtPbyMLlo04=",
+    "rev": "94e78eaaa011f3b9e73a7f76ed04f780ad159df7"
+  },
+  "release-v1.3.0": {
+    "hash": "sha256-AgdOJ8nSRwxQ4m3M6euTrcJ6voAkkUZBHuLAXKdyEZ8=",
+    "rev": "4d9f42054bd78ac300e79a671c604729fc64eb7b"
+  },
+  "write-PG-volume-coupling": {
+    "hash": "sha256-Ue9e1899aVDEnSEw0y2PWYeel04ZOfFqDIhZHIGvqnA=",
+    "rev": "5551c62eb347d8d02bd89a53084c4f7f68fe8ab2"
+  },
+  "fix-uvol": {
+    "hash": "sha256-PtcN4lLr3bZj/hLl6SsXCvZUf1qCj9LqnXtXBu7ByYM=",
+    "rev": "befacca8bca39b56d040d102b48e3fb306a7dd95"
+  },
+  "OpenFOAM11": {
+    "hash": "sha256-FZC6quUaI8uEsxp/f07e7Qmi3+MbTMw0nb1LKRVZ8/I=",
+    "rev": "e9b6e41236177d04441ea6af47b9cf74970d8f03"
+  },
+  "OpenFOAM10": {
+    "hash": "sha256-ZxYmcUNSUZh9C8D9nSzUlEba1osZg6+LR/31BPKqSWk=",
+    "rev": "d53753b1c927b2413b02299c9da15725b3e772f0"
+  },
+  "OpenFOAM9": {
+    "hash": "sha256-C1B1WYct/VRwEBGJp7suCU4z1ymBcjIfBOBiAhrHy1c=",
+    "rev": "a2885806836a4f516abce0be52128aa5083320fe"
+  },
+  "OpenFOAM8": {
+    "hash": "sha256-Pabdmp1OvjFowcRKrkNyVsWEbVcTbZUtDOk+S4zSRjw=",
+    "rev": "f0c120aa8fea7e704b1bce836aac14abc79f090f"
+  },
+  "OpenFOAM7": {
+    "hash": "sha256-XuKWVuqcPV7Jj+I11obD0UenvUFvZFiBVvvqkSkUdWc=",
+    "rev": "3155ff981428f4211bbd3747ea8c244c5be399ab"
+  },
+  "OpenFOAM6": {
+    "hash": "sha256-5Mlo9TVPBxTOMk0uABTcMdCCS3qy6o7oPaxr/Fyw77g=",
+    "rev": "5584f5ed76a5e93dcb0ca050a47a90ec494e1ee7"
+  },
+  "OpenFOAM5": {
+    "hash": "sha256-NtGmjmnyl9vUkpP4egxm/3CAtlznUpW6YQoHLTQvpUQ=",
+    "rev": "f5e506435c5940afbbf7d78179e442a5012308b0"
+  },
+  "OpenFOAM4": {
+    "hash": "sha256-NtGmjmnyl9vUkpP4egxm/3CAtlznUpW6YQoHLTQvpUQ=",
+    "rev": "f5e506435c5940afbbf7d78179e442a5012308b0"
+  },
+  "foam-extend": {
+    "hash": "sha256-h67DojpbkgDR/sRyEslL2JgiwqHFVdrzSxnM2ZkpsxY=",
+    "rev": "68f3bba06dfa4d86861ec50e0e27539571cc58f7"
+  },
+  "OpenFOAMdev": {
+    "hash": "sha256-3O1gBmsMCwM/gXMlfmmy1D/cABqE6Qh5c8uOMUsVa6w=",
+    "rev": "30e33b58353ea1a65ee8442522720c7c5bfa837c"
+  },
+  "OpenFOAMv1806": {
+    "hash": "sha256-UPZFGpZao8lt2+rGI7qPPGeX3DFUUOKfVxnzYHN+4fs=",
+    "rev": "41f7a3b592024303ca42fb776f88453e2e0a3a4f"
+  },
+  "SWE-interFoam": {
+    "hash": "sha256-Fws/FzaeatFykwkwjaW95NYg0XI5VVpY+mNR/Z7fjVs=",
+    "rev": "83abaa01196d99b3a27a29ddc1aec0e34ac8f3da"
+  },
+  "FF-OF7": {
+    "hash": "sha256-ICbvYAVTYoKNgC0ObKcyg7LO8w7olf1/l7TQZ98FC6c=",
+    "rev": "383a18ac83b9d10d91babf04b30ecb7813d618c8"
+  }
+}

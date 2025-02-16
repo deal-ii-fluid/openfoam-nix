@@ -34,3 +34,12 @@
 - 如果您在使用过程中遇到任何问题，请检查错误信息并参考 Nix 和 OpenFOAM 的文档。
 
 希望这个 Nix 配置能够帮助您更高效地进行 OpenFOAM 开发！
+
+## Shell 支持
+
+本项目支持 bash 和 fish shell：
+
+- Bash 用户会自动使用 `set-openfoam-vars`
+- Fish 用户会自动使用 `set-openfoam-vars.fish`
+
+环境变量会根据您使用的 shell 自动正确设置。

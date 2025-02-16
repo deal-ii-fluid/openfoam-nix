@@ -5,7 +5,8 @@
       "repo": "OpenFOAM-9",
       "rev": "d87800e1bde07696061acb231ec68df126a937cc",
       "sha256": "sha256-wcC6gcSrVqEsvP16002/pDNAZvZXBfoMiqvUisgMsFI=",
-      "name": "OpenFOAM-9"
+      "name": "OpenFOAM-9",
+      "version": "9"
     },
     "ThirdParty": {
       "owner": "OpenFOAM",
@@ -21,7 +22,8 @@
       "repo": "OpenFOAM-10",
       "rev": "89f925dc708d068f84f51e8317e3bebcda64f5cb",
       "sha256": "sha256-pD0u58vH9LQXf8Ad9EZdpUKGKjRSTTkBfsO7pOTt+BE=",
-      "name": "OpenFOAM-10"
+      "name": "OpenFOAM-10",
+      "version": "10"
     },
     "ThirdParty": {
       "owner": "OpenFOAM",
