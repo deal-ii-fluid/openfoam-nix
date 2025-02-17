@@ -1,0 +1,102 @@
+=== 设置第一个环境 ===
+-- Source project setup files
+-- Source user setup files for optional packages
+-- Clean environment paths again. Only remove duplicates
+-- Cleanup environment:
+
+=== 所有环境变量的变化 ===
+[+] FOAM_EXT_LIBBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10/platforms/linuxArm64GccDPInt32/lib
+[+] FOAM_INST_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10
+[+] FOAM_JOB_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/jobControl
+[-] FOAM_MPI=sys-openmpi
+[+] FOAM_MPI=openmpi-system
+[+] FOAM_RUN=/tmp/OpenFOAM-10/run
+[+] FOAM_SETTINGS=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10
+[+] FOAM_SITE_APPBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/site/10/platforms/linuxArm64GccDPInt32Opt/bin
+[+] FOAM_SITE_LIBBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/site/10/platforms/linuxArm64GccDPInt32Opt/lib
+[-] LD_LIBRARY_PATH=/nix/store/77gvdcyncgzrp4l9xvn99prqvd1zs42y-precice-openfoam-adapter-22d86c54cb72d4943448c23bdafc843a1bc32fcd/lib:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/lib/dummy:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/lib:/tmp/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/lib:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10/platforms/linuxArm64GccDPInt32Opt/lib:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/lib:/nix/store/lc68yx4rjfyxldvxcs7125c4ayb2lqig-openmpi-5.0.6/lib:/nix/store/ld44j2v9af8ksvhr5bi54fzjy64a1xnc-cursor-0.45.8-extracted/usr/lib:
+[+] LD_LIBRARY_PATH=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10/platforms/linuxArm64Gcc/gperftools-svn/lib:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/lib/openmpi-system:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10/platforms/linuxArm64GccDPInt32/lib/openmpi-system:/nix/store/lc68yx4rjfyxldvxcs7125c4ayb2lqig-openmpi-5.0.6/lib:/tmp/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/lib:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/site/10/platforms/linuxArm64GccDPInt32Opt/lib:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/lib:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10/platforms/linuxArm64GccDPInt32/lib:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/lib/dummy:/nix/store/77gvdcyncgzrp4l9xvn99prqvd1zs42y-precice-openfoam-adapter-22d86c54cb72d4943448c23bdafc843a1bc32fcd/lib:/nix/store/ld44j2v9af8ksvhr5bi54fzjy64a1xnc-cursor-0.45.8-extracted/usr/lib
+[+] MPI_ARCH_PATH=/nix/store/lc68yx4rjfyxldvxcs7125c4ayb2lqig-openmpi-5.0.6
+[+] MPI_BUFFER_SIZE=20000000
+[+] ParaView_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10/platforms/linuxArm64Gcc/ParaView-5.6.3
+[+] ParaView_GL=mesa
+[+] ParaView_MAJOR=5.6
+[+] ParaView_VERSION=5.6.3
+[-] PATH=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/bin:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/bin:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/wmake:/nix/store/lc68yx4rjfyxldvxcs7125c4ayb2lqig-openmpi-5.0.6/bin:/nix/store/r5scnaz9ss51zha8imnm745xgfzq46mv-patchelf-0.15.0/bin:/nix/store/pavcqvq7ycdbpal1mfjsscvgngzsg9sp-gcc-wrapper-14-20241116/bin:/nix/store/x5k7anh2zz9vbdicl0mbxyjd1kw4a8j4-gcc-14-20241116/bin:/nix/store/hpfy3n69wpzh1bzdb49y9rpjmf7m6sgy-glibc-2.40-66-bin/bin:/nix/store/262cihc8b77953r05p353h9xd7axjrbz-coreutils-9.5/bin:/nix/store/nfpnf2pkrm0c1ys2kbv8l2wa1ira7f94-binutils-wrapper-2.43.1/bin:/nix/store/sqqa2hz569dcdv34y2c96gxzldpalp5q-binutils-2.43.1/bin:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/bin:/nix/store/hdfviyddzb623wkpsdz37bhxl477w082-precice-2.5.0/bin:/nix/store/00pjkymc1s1kv2idsxgpwfyz64qhn338-openmpi-5.0.6-dev/bin:/nix/store/lc68yx4rjfyxldvxcs7125c4ayb2lqig-openmpi-5.0.6/bin:/nix/store/b2f27smcin0d68bjfsw8wb87nsfabv3l-precice-3.1.2/bin:/nix/store/nhz2mx6q04kxdc4asbxdl75wm4i2d6j4-paraview-5.13.2/bin:/nix/store/i5gqvidqcjfldkp02b0wnhih74n09hif-python3-3.12.8-env/bin:/nix/store/6jrakv7db5kri4dr1mk3ahc193d572si-findutils-4.10.0/bin:/nix/store/hm7nmb2wrvj1s6kc70hj9nxmcy8ln3s7-gnused-4.9/bin:/nix/store/012rmzna0ji4srjqk8g6j2i0b74zw4im-openssh-9.9p1/bin:/nix/store/r2amjzc6ca4n7aq66s1izg8rrlaxfjja-gnugrep-3.11/bin:/nix/store/v8nnlmgld66jjikq1hdarsnvrspjn6xz-flex-2.6.4/bin:/nix/store/vvhp27apjrab6kvpx1agp55xw7k6122p-gnum4-1.4.19/bin:/nix/store/rn3yzgbnlv8rdws3y4gx514lzbnh0fys-scotch-7.0.6-bin/bin:/nix/store/m2kxzc7bdf6jryshyx28iiwzhwy9yy4r-gnumake-4.4.1/bin:/nix/store/262cihc8b77953r05p353h9xd7axjrbz-coreutils-9.5/bin:/nix/store/6jrakv7db5kri4dr1mk3ahc193d572si-findutils-4.10.0/bin:/nix/store/xga9d3fliljwqfa32w1hw3m3nzwvyjbf-diffutils-3.10/bin:/nix/store/hm7nmb2wrvj1s6kc70hj9nxmcy8ln3s7-gnused-4.9/bin:/nix/store/r2amjzc6ca4n7aq66s1izg8rrlaxfjja-gnugrep-3.11/bin:/nix/store/g0qq1c38ykvyjd989xksc7hmm3r92wm9-gawk-5.3.1/bin:/nix/store/5aslpf9kzqa4fza3b6144w4qvd8dmnz7-gnutar-1.35/bin:/nix/store/8hg72scngdqb85pgadsxhzg70j003d96-gzip-1.13/bin:/nix/store/jlv5xb2w1bhfwynr8r4pbbrpj7w3vdzn-bzip2-1.0.8-bin/bin:/nix/store/kas0z36vr2nhcmc6f4b6b0k5r3lwb144-gnumake-4.4.1/bin:/nix/store/ck4s3x3jvml21zpny04xg7fbi8qpxjax-bash-5.2p37/bin:/nix/store/fri0brqgc80hiqy2dhrpmc6jpxxxjs8w-patch-2.7.6/bin:/nix/store/jrm5bgxc4w96d43mqag72p2pr5nc8h3j-xz-5.6.3-bin/bin:/nix/store/cvf1g69j0qwql7hdak4yzpz14dv7n7w3-file-5.46/bin:/run/wrappers/bin:/usr/bin:/usr/sbin:/home/jqwang/.local/bin:/home/jqwang/code/go/bin:/home/jqwang/bin:/home/jqwang/.local/bin:/nix/store/ld44j2v9af8ksvhr5bi54fzjy64a1xnc-cursor-0.45.8-extracted:/nix/store/ld44j2v9af8ksvhr5bi54fzjy64a1xnc-cursor-0.45.8-extracted/usr/sbin:/nix/store/xgvqbslsa5km8q1bkhlhdr3r5kxblvn6-bash-5.2p37/bin:/nix/store/gx5qlmsiccjv8v39l0mpikksl1pgssnw-binutils-2.43.1/bin:/nix/store/j78cpriz6wkn9p2mkw742iix9hbkpbv2-coreutils-9.5/bin:/nix/store/rsv6cpsrha12fca5px3kb8zqvq0gd9bv-gawk-5.3.1/bin:/nix/store/z4nsglkh6d9qnyrf0ms09rflqky6ynky-libarchive-3.7.7/bin:/nix/store/hkvpmx74ppyqcvgznrnsshnyjvzniykh-pv-1.9.27/bin:/nix/store/cqpz9411gdks0s172hdf2ycb6h879xfz-squashfs-4.6.1/bin:/run/wrappers/bin:/usr/bin:/usr/sbin:/home/jqwang/.local/bin:/home/jqwang/.local/bin:/run/wrappers/bin:/snap/bin:/home/jqwang/.local/share/flatpak/exports/bin:/var/lib/flatpak/exports/bin:/home/jqwang/.nix-profile/bin:/home/jqwang/.local/state/nix/profile/bin:/home/jqwang/.local/state/nix/profile/bin:/etc/profiles/per-user/jqwang/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin:/nix/store/ld91kbci239jvr6gm9j73g475ps383ji-ghostty-1.0.1/bin
+[+] PATH=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10/platforms/linuxArm64Gcc/gperftools-svn/bin:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10/platforms/linuxArm64Gcc/cmake-*/bin:/tmp/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/bin:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/site/10/platforms/linuxArm64GccDPInt32Opt/bin:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/bin:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/bin:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/wmake:/nix/store/lc68yx4rjfyxldvxcs7125c4ayb2lqig-openmpi-5.0.6/bin:/nix/store/r5scnaz9ss51zha8imnm745xgfzq46mv-patchelf-0.15.0/bin:/nix/store/pavcqvq7ycdbpal1mfjsscvgngzsg9sp-gcc-wrapper-14-20241116/bin:/nix/store/x5k7anh2zz9vbdicl0mbxyjd1kw4a8j4-gcc-14-20241116/bin:/nix/store/hpfy3n69wpzh1bzdb49y9rpjmf7m6sgy-glibc-2.40-66-bin/bin:/nix/store/262cihc8b77953r05p353h9xd7axjrbz-coreutils-9.5/bin:/nix/store/nfpnf2pkrm0c1ys2kbv8l2wa1ira7f94-binutils-wrapper-2.43.1/bin:/nix/store/sqqa2hz569dcdv34y2c96gxzldpalp5q-binutils-2.43.1/bin:/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/bin:/nix/store/hdfviyddzb623wkpsdz37bhxl477w082-precice-2.5.0/bin:/nix/store/00pjkymc1s1kv2idsxgpwfyz64qhn338-openmpi-5.0.6-dev/bin:/nix/store/b2f27smcin0d68bjfsw8wb87nsfabv3l-precice-3.1.2/bin:/nix/store/nhz2mx6q04kxdc4asbxdl75wm4i2d6j4-paraview-5.13.2/bin:/nix/store/i5gqvidqcjfldkp02b0wnhih74n09hif-python3-3.12.8-env/bin:/nix/store/6jrakv7db5kri4dr1mk3ahc193d572si-findutils-4.10.0/bin:/nix/store/hm7nmb2wrvj1s6kc70hj9nxmcy8ln3s7-gnused-4.9/bin:/nix/store/012rmzna0ji4srjqk8g6j2i0b74zw4im-openssh-9.9p1/bin:/nix/store/r2amjzc6ca4n7aq66s1izg8rrlaxfjja-gnugrep-3.11/bin:/nix/store/v8nnlmgld66jjikq1hdarsnvrspjn6xz-flex-2.6.4/bin:/nix/store/vvhp27apjrab6kvpx1agp55xw7k6122p-gnum4-1.4.19/bin:/nix/store/rn3yzgbnlv8rdws3y4gx514lzbnh0fys-scotch-7.0.6-bin/bin:/nix/store/m2kxzc7bdf6jryshyx28iiwzhwy9yy4r-gnumake-4.4.1/bin:/nix/store/xga9d3fliljwqfa32w1hw3m3nzwvyjbf-diffutils-3.10/bin:/nix/store/g0qq1c38ykvyjd989xksc7hmm3r92wm9-gawk-5.3.1/bin:/nix/store/5aslpf9kzqa4fza3b6144w4qvd8dmnz7-gnutar-1.35/bin:/nix/store/8hg72scngdqb85pgadsxhzg70j003d96-gzip-1.13/bin:/nix/store/jlv5xb2w1bhfwynr8r4pbbrpj7w3vdzn-bzip2-1.0.8-bin/bin:/nix/store/kas0z36vr2nhcmc6f4b6b0k5r3lwb144-gnumake-4.4.1/bin:/nix/store/ck4s3x3jvml21zpny04xg7fbi8qpxjax-bash-5.2p37/bin:/nix/store/fri0brqgc80hiqy2dhrpmc6jpxxxjs8w-patch-2.7.6/bin:/nix/store/jrm5bgxc4w96d43mqag72p2pr5nc8h3j-xz-5.6.3-bin/bin:/nix/store/cvf1g69j0qwql7hdak4yzpz14dv7n7w3-file-5.46/bin:/run/wrappers/bin:/usr/bin:/usr/sbin:/home/jqwang/.local/bin:/home/jqwang/code/go/bin:/home/jqwang/bin:/home/jqwang/.local/bin:/nix/store/ld44j2v9af8ksvhr5bi54fzjy64a1xnc-cursor-0.45.8-extracted:/nix/store/ld44j2v9af8ksvhr5bi54fzjy64a1xnc-cursor-0.45.8-extracted/usr/sbin:/nix/store/xgvqbslsa5km8q1bkhlhdr3r5kxblvn6-bash-5.2p37/bin:/nix/store/gx5qlmsiccjv8v39l0mpikksl1pgssnw-binutils-2.43.1/bin:/nix/store/j78cpriz6wkn9p2mkw742iix9hbkpbv2-coreutils-9.5/bin:/nix/store/rsv6cpsrha12fca5px3kb8zqvq0gd9bv-gawk-5.3.1/bin:/nix/store/z4nsglkh6d9qnyrf0ms09rflqky6ynky-libarchive-3.7.7/bin:/nix/store/hkvpmx74ppyqcvgznrnsshnyjvzniykh-pv-1.9.27/bin:/nix/store/cqpz9411gdks0s172hdf2ycb6h879xfz-squashfs-4.6.1/bin:/home/jqwang/.local/bin:/home/jqwang/.local/bin:/snap/bin:/home/jqwang/.local/share/flatpak/exports/bin:/var/lib/flatpak/exports/bin:/home/jqwang/.nix-profile/bin:/home/jqwang/.local/state/nix/profile/bin:/home/jqwang/.local/state/nix/profile/bin:/etc/profiles/per-user/jqwang/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin:/nix/store/ld91kbci239jvr6gm9j73g475ps383ji-ghostty-1.0.1/bin
+[+] WM_ARCH_OPTION=64
+[+] WM_CC=gcc
+[+] WM_CFLAGS=-fPIC
+[+] WM_CXXFLAGS=-fPIC -std=c++0x
+[+] WM_CXX=g++
+[+] WM_LDFLAGS=
+[+] WM_PROJECT_INST_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10
+
+=== OpenFOAM 相关变量 ===
+FOAM_ADAPTER_DIR=/nix/store/77gvdcyncgzrp4l9xvn99prqvd1zs42y-precice-openfoam-adapter-22d86c54cb72d4943448c23bdafc843a1bc32fcd
+FOAM_API=10
+FOAM_APPBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/bin
+FOAM_APP=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/applications
+FOAM_ETC=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/etc
+FOAM_EXT_LIBBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10/platforms/linuxArm64GccDPInt32/lib
+FOAM_INST_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10
+FOAM_JOB_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/jobControl
+FOAM_LIBBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/lib
+FOAM_MPI=openmpi-system
+FOAM_RUN=/tmp/OpenFOAM-10/run
+FOAM_SETTINGS=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10
+FOAM_SIGFPE=
+FOAM_SITE_APPBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/site/10/platforms/linuxArm64GccDPInt32Opt/bin
+FOAM_SITE_LIBBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/site/10/platforms/linuxArm64GccDPInt32Opt/lib
+FOAM_SOLVERS=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/applications/solvers
+FOAM_SRC=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/src
+FOAM_TUTORIALS=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/tutorials
+FOAM_USER_APPBIN=/tmp/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/bin
+FOAM_USER_LIBBIN=/tmp/OpenFOAM-10/platforms/linuxArm64GccDPInt32Opt/lib
+FOAM_UTILITIES=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/applications/utilities
+WM_ARCH=linuxArm64
+WM_ARCH_OPTION=64
+WM_CC=gcc
+WM_CFLAGS=-fPIC
+WM_COMPILE_OPTION=Opt
+WM_COMPILER=Gcc
+WM_COMPILER_LIB_ARCH=64
+WM_COMPILER_TYPE=system
+WM_CXXFLAGS=-fPIC -std=c++0x
+WM_CXX=g++
+WM_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10/wmake
+WM_LABEL_OPTION=Int32
+WM_LABEL_SIZE=32
+WM_LDFLAGS=
+WM_LINK_LANGUAGE=c++
+WM_MPLIB=SYSTEMOPENMPI
+WM_NCOMPPROCS=16
+WM_OPTIONS=linuxArm64GccDPInt32Opt
+WM_OSTYPE=POSIX
+WM_PRECISION_OPTION=DP
+WM_PROJECT_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10
+WM_PROJECT_INST_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10
+WM_PROJECT=OpenFOAM
+WM_PROJECT_USER_DIR=/tmp/OpenFOAM-10
+WM_PROJECT_VERSION=10
+WM_THIRD_PARTY_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10
+
+=== 设置第二个环境 ===
+
+=== 两种设置方式的 OpenFOAM 变量差异 ===
+[etc/bashrc] FOAM_EXT_LIBBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/ThirdParty-10/platforms/linuxArm64GccDPInt32/lib
+[etc/bashrc] FOAM_INST_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10
+[etc/bashrc] FOAM_JOB_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/jobControl
+[etc/bashrc] FOAM_MPI=openmpi-system
+[etc/bashrc] FOAM_RUN=/tmp/OpenFOAM-10/run
+[etc/bashrc] FOAM_SETTINGS=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/OpenFOAM-10
+[set-openfoam-vars] FOAM_MPI=sys-openmpi
+[etc/bashrc] FOAM_SITE_APPBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/site/10/platforms/linuxArm64GccDPInt32Opt/bin
+[etc/bashrc] FOAM_SITE_LIBBIN=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10/site/10/platforms/linuxArm64GccDPInt32Opt/lib
+[etc/bashrc] WM_ARCH_OPTION=64
+[etc/bashrc] WM_CC=gcc
+[etc/bashrc] WM_CFLAGS=-fPIC
+[etc/bashrc] WM_CXXFLAGS=-fPIC -std=c++0x
+[etc/bashrc] WM_CXX=g++
+[etc/bashrc] WM_LDFLAGS=
+[etc/bashrc] WM_PROJECT_INST_DIR=/nix/store/97g1nl315b2jd0i7hblm18ihxn34jxwb-openfoam-10

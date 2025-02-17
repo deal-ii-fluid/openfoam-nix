@@ -3,7 +3,6 @@
 , fetchFromGitHub
 , fetchurl
 , openfoam
-, bigarray
 , parmetis
 , scotch
 , petsc
@@ -13,15 +12,10 @@
 }:
 
 let
-  # 读取 solids4foam_versions.json
-  solids4foamVersions = builtins.fromJSON (builtins.readFile ../versions/solids4foam_versions.json);
-
-  # 从 openfoam 包名中获取版本号
-  ofVersion = builtins.substring 9 2 openfoam.name;
-
-  # 根据 OpenFOAM 版本选择对应的 solids4foam 配置
-  versionKey = "OpenFOAM${ofVersion}";
-  versionInfo = solids4foamVersions.${versionKey};
+  versions = lib.importJSON ../versions/solids4foam_versions.json;
+  foam = openfoam;
+  foamVersion = builtins.substring 9 2 foam.name;
+  versionInfo = versions."OpenFOAM${foamVersion}";
 
   # 预下载 eigen3
   eigen3 = fetchurl {
@@ -54,7 +48,7 @@ stdenv.mkDerivation rec {
 
   buildPhase = ''
     # 设置 OpenFOAM 环境
-    source ${openfoam}/OpenFOAM-${ofVersion}/etc/bashrc
+    source ${openfoam}/OpenFOAM-${foamVersion}/etc/bashrc
     export FOAM_USER_LIBBIN="$PWD/platforms/$WM_OPTIONS/lib"
 
     # 创建 ThirdParty/eigen3 目录并解压 eigen3

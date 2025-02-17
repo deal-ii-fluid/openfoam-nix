@@ -124,21 +124,31 @@ stdenv.mkDerivation rec {
 export FOAM_API=${lib.substring 0 2 version}
 export WM_PROJECT=OpenFOAM
 export WM_PROJECT_VERSION=${version}
-export FOAM_MPI=sys-openmpi
-export WM_MPLIB=SYSTEMOPENMPI
+export FOAM_MPI=openmpi-system
+#export WM_MPLIB=SYSTEMOPENMPI
 
 # 编译器和构建选项
+export BUILD_PLATFORM=linuxArm
 export WM_COMPILER=Gcc
+export WM_CXX=g++
+export WM_CXXFLAGS="-fPIC -std=c++0x"
+export WM_CC=gcc
+export WM_CFLAGS=-fPIC
+export WM_ARCH_OPTION=64
+export WM_COMPILER_LIB_ARCH=64
 export WM_COMPILER_TYPE=system
 export WM_COMPILE_OPTION=Opt
 export WM_LABEL_OPTION=Int32
 export WM_LABEL_SIZE=32
 export WM_PRECISION_OPTION=DP
 export WM_LINK_LANGUAGE=c++
-export WM_ARCH_OPTION=64
+
+# fix patch
+export WM_OSTYPE=POSIX        # 明确指定 POSIX
+export FOAM_SIGFPE=
 
 # 架构和选项设置
-export WM_ARCH=linuxArm64
+export WM_ARCH="\$BUILD_PLATFORM\$WM_COMPILER_LIB_ARCH"
 export WM_OPTIONS="\$WM_ARCH\$WM_COMPILER\$WM_PRECISION_OPTION\$WM_LABEL_OPTION\$WM_COMPILE_OPTION"
 
 # 主要目录路径
@@ -193,19 +203,31 @@ EOL
 set -gx FOAM_API ${lib.substring 0 2 version}
 set -gx WM_PROJECT OpenFOAM
 set -gx WM_PROJECT_VERSION ${version}
-set -gx FOAM_MPI sys-openmpi
-set -gx WM_MPLIB SYSTEMOPENMPI
+set -gx FOAM_MPI openmpi-system
+#set -gx WM_MPLIB SYSTEMOPENMPI
 
 # 编译器和构建选项
+set -gx BUILD_PLATFORM linuxArm
 set -gx WM_COMPILER Gcc
+set -gx WM_CXX g++
+set -gx WM_CXXFLAGS "-fPIC -std=c++0x"
+set -gx WM_CC gcc
+set -gx WM_CFLAGS -fPIC
+set -gx WM_ARCH_OPTION 64
+set -gx WM_COMPILER_LIB_ARCH 64
 set -gx WM_COMPILER_TYPE system
 set -gx WM_COMPILE_OPTION Opt
 set -gx WM_LABEL_OPTION Int32
 set -gx WM_LABEL_SIZE 32
 set -gx WM_PRECISION_OPTION DP
+set -gx WM_LINK_LANGUAGE c++
+
+# fix patch
+set -gx WM_OSTYPE POSIX        # 明确指定 POSIX
+set -gx FOAM_SIGFPE ""
 
 # 架构和选项设置
-set -gx WM_ARCH linuxArm64
+set -gx WM_ARCH "\$BUILD_PLATFORM\$WM_COMPILER_LIB_ARCH"
 set -gx WM_OPTIONS "\$WM_ARCH\$WM_COMPILER\$WM_PRECISION_OPTION\$WM_LABEL_OPTION\$WM_COMPILE_OPTION"
 
 # 主要目录路径
@@ -250,7 +272,6 @@ ${pkgs.coreutils}/bin/mkdir -p "$WM_PROJECT_USER_DIR"
 ${pkgs.coreutils}/bin/mkdir -p "$FOAM_USER_APPBIN"
 ${pkgs.coreutils}/bin/mkdir -p "$FOAM_USER_LIBBIN"
 EOL
-
     echo "Making scripts executable"
     chmod +x "$out/bin/set-openfoam-vars"
     chmod +x "$out/bin/set-openfoam-vars.fish"
@@ -290,52 +311,6 @@ EOL
     echo "=== Completed installPhase for OpenFOAM-${version} ==="
   '';
 
-  postFixup = ''
-    # 创建环境变量设置脚本
-    mkdir -p $out/bin
-    cat > $out/bin/set-openfoam-vars <<EOF
-    #!/bin/sh
-    export WM_PROJECT=OpenFOAM
-    export WM_PROJECT_VERSION=${version}
-    export FOAM_INST_DIR=$out
-    export WM_COMPILER=Gcc
-    export WM_COMPILER_TYPE=system
-    export WM_COMPILE_OPTION=Opt
-    export WM_PRECISION_OPTION=DP
-    export WM_LABEL_SIZE=32
-    export WM_COMPILE_OPTION=Opt
-    export WM_PROJECT_DIR=\$FOAM_INST_DIR/OpenFOAM-\$WM_PROJECT_VERSION
-    export WM_OSTYPE=POSIX        # 明确指定 POSIX
-    export FOAM_SIGFPE=
-    export FOAM_BASH=\$WM_PROJECT_DIR/etc/bashrc
-    export FOAM_SRC=\$WM_PROJECT_DIR/src
-    export FOAM_APP=\$WM_PROJECT_DIR/applications
-    export FOAM_TUTORIALS=\$WM_PROJECT_DIR/tutorials
-    export FOAM_UTILITIES=\$FOAM_APP/utilities
-    export FOAM_SOLVERS=\$FOAM_APP/solvers
-    export FOAM_RUN=\$WM_PROJECT_DIR/run
-    export FOAM_LIBBIN=\$FOAM_INST_DIR/lib
-    export FOAM_APPBIN=\$FOAM_INST_DIR/bin
-    export FOAM_ETC=\$WM_PROJECT_DIR/etc
-    export FOAM_SETTINGS=
-    export WM_ARCH=\$(uname -m)
-    export WM_ARCH_OPTION=
-    export WM_DIR=\$WM_PROJECT_DIR/wmake
-    export WM_LINK_LANGUAGE=c++
-    export WM_OPTIONS=\$WM_ARCH\$WM_COMPILER\$WM_PRECISION_OPTION\$WM_LABEL_SIZE\$WM_COMPILE_OPTION
-    export FOAM_EXT_LIBBIN=\$WM_THIRD_PARTY_DIR/platforms/\$WM_OPTIONS/lib
-    export LD_LIBRARY_PATH=\$FOAM_LIBBIN:\$FOAM_EXT_LIBBIN:\$LD_LIBRARY_PATH
-    export PATH=\$FOAM_APPBIN:\$WM_DIR:\$PATH
-    EOF
-    chmod +x $out/bin/set-openfoam-vars
-
-    # 为 fish shell 创建环境变量设置脚本
-    cat > $out/bin/set-openfoam-vars.fish <<EOF
-    #!/usr/bin/env fish
-    // ... fish script content ...
-    EOF
-    chmod +x $out/bin/set-openfoam-vars.fish
-  '';
 
   buildInputs = [
     ensureNewerSourcesForZipFilesHook

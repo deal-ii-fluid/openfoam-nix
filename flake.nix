@@ -15,6 +15,7 @@
       overlay = import ./nix/overlays.nix;
       versions = builtins.fromJSON (builtins.readFile ./versions/versions.json);
       solids4foamVersions = builtins.fromJSON (builtins.readFile ./versions/solids4foam_versions.json);
+      blastfoamVersions = builtins.fromJSON (builtins.readFile ./versions/blastfoam_versions.json);
 
       # 添加特定版本的 nixpkgs
       pkgs-specific = forAllSystems (system: import nixpkgs-specific {
@@ -49,9 +50,21 @@
             overlays = [ overlay ];
             config.allowUnfree = true;
           };
-          versionInfo = solids4foamVersions.${versionKey};
         in pkgs.callPackage ./nix/openfoam-solids4foam.nix {
-          inherit openfoamPkg versionInfo;
+          openfoam = openfoamPkg;
+          inherit (pkgs) parmetis scotch petsc boost mpi openmpi;
+        };
+
+      # 辅助函数：创建 blastfoam 包
+      makeBlastFoam = system: openfoamPkg:
+        let
+          pkgs = import nixpkgs-unstable {
+            inherit system;
+            overlays = [ overlay ];
+            config.allowUnfree = true;
+          };
+        in pkgs.callPackage ./nix/openfoam-solver-blastfoam.nix {
+          openfoamPkg = openfoamPkg;
         };
 
     in {
@@ -96,10 +109,16 @@
           # 创建 solids4foam 包
           solids4foamPkgs = builtins.listToAttrs (map (version: {
             name = "solids4foam-${version}";
-            value = makeSolids4Foam system openfoamPkgs."openfoam-${version}" "v${version}";
+            value = makeSolids4Foam system openfoamPkgs."openfoam-${version}" "OpenFOAM${version}";
           }) ["9" "10" "11"]);
+
+          # 创建 blastfoam 包
+          blastfoamPkgs = builtins.listToAttrs (map (version: {
+            name = "blastfoam-${version}";
+            value = makeBlastFoam system openfoamPkgs."openfoam-${version}";
+          }) ["9"]);  # 暂时只支持 OpenFOAM-9
         in
-          openfoamPkgs // preciceAdapterPkgs // solids4foamPkgs // {
+          openfoamPkgs // preciceAdapterPkgs // solids4foamPkgs // blastfoamPkgs // {
             inherit openfoamToolbox preciceCalculixAdapter;
           }
       );
@@ -223,7 +242,9 @@
               export FOAM_ADAPTER_DIR=${adapterPackage}
               export LD_LIBRARY_PATH=${adapterPackage}/lib:$LD_LIBRARY_PATH
             ''}
-            
+
+            # 输出环境信息
+            echo "OpenFOAM $WM_PROJECT_VERSION 环境已设置:"
             # 输出环境信息
             echo "OpenFOAM $WM_PROJECT_VERSION 环境已设置:"
             echo "  WM_PROJECT_DIR     = $WM_PROJECT_DIR"
@@ -243,8 +264,7 @@
           openfoamPackage = self.packages.${system}.${versionName};
           solids4foamPackage = pkgs.callPackage ./nix/openfoam-solids4foam.nix {
             openfoam = openfoamPackage;
-            versionInfo = solids4foamVersions."v${version}";
-            inherit (pkgs.ocamlPackages) bigarray;
+            inherit (pkgs) parmetis scotch petsc boost mpi openmpi;
           };
         in pkgs.mkShell {
           buildInputs = with pkgs; [
@@ -286,6 +306,44 @@
             echo "CalculiX-adapter 开发环境已设置"
           '';
         };
+
+        # 创建 blastfoam 开发环境
+        makeBlastFoamDevShell = versionName: let
+          version = builtins.substring 9 2 versionName;
+          openfoamPackage = self.packages.${system}.${versionName};
+          blastfoamPackage = pkgs.callPackage ./nix/openfoam-solver-blastfoam.nix {
+            openfoamPkg = openfoamPackage;
+          };
+        in pkgs.mkShell {
+          buildInputs = with pkgs; [
+            openfoamPackage
+            blastfoamPackage
+            paraview
+            gnumake
+            cmake
+            gcc
+            gdb
+          ];
+
+          shellHook = ''
+            # 检测当前 shell 类型并相应地 source 环境变量
+            if test -n "$FISH_VERSION"
+            then
+              source ${openfoamPackage}/bin/set-openfoam-vars.fish
+            else
+              source ${openfoamPackage}/bin/set-openfoam-vars
+            fi
+            
+            # 设置 blastfoam 环境变量
+            export BLAST_DIR=${blastfoamPackage}
+            export LD_LIBRARY_PATH=${blastfoamPackage}/lib:$LD_LIBRARY_PATH
+            
+            echo "OpenFOAM-blastfoam 环境已设置:"
+            echo "  WM_PROJECT_DIR = $WM_PROJECT_DIR"
+            echo "  BLAST_DIR      = $BLAST_DIR"
+          '';
+        };
+
       in
         # 生成所有版本的开发环境
         (nixpkgs-unstable.lib.mapAttrs makeDevShellWithTools versions) // {
@@ -313,6 +371,8 @@
           "solids4foam-9" = makeSolids4FoamDevShell "openfoam-9";
           "solids4foam-10" = makeSolids4FoamDevShell "openfoam-10";
           "solids4foam-11" = makeSolids4FoamDevShell "openfoam-11";
+          # 为 OpenFOAM-9 创建 blastfoam 环境
+          "blastfoam-9" = makeBlastFoamDevShell "openfoam-9";
         }
       );
 

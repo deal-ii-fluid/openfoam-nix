@@ -41,7 +41,8 @@ stdenv.mkDerivation rec {
 
   buildPhase = ''
     # 设置 OpenFOAM 环境
-    source ${openfoam}/OpenFOAM-${ofVersion}/etc/bashrc
+    #source ${openfoam}/OpenFOAM-${ofVersion}/etc/bashrc
+    source ${openfoam}/bin/set-openfoam-vars
 
     # 设置构建环境
     export FOAM_USER_LIBBIN="$PWD/platforms/$WM_OPTIONS/lib"
