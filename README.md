@@ -1,6 +1,16 @@
 # OpenFOAM Nix Flake
 
+[![Test](https://github.com/deal-ii-fluid/openfoam-nix/actions/workflows/test.yml/badge.svg)](https://github.com/deal-ii-fluid/openfoam-nix/actions/workflows/test.yml)
+
 这个 Nix Flake 提供了 OpenFOAM 及其相关工具的打包和开发环境。
+
+## 状态
+
+- ✅ OpenFOAM 9/10/11: 已支持
+- ✅ preCICE-OpenFOAM 适配器: 已支持
+- ✅ solids4foam: 已支持
+- ✅ blastfoam: 已支持 (仅 OpenFOAM-9)
+- ✅ CalculiX-preCICE 适配器: 已支持
 
 ## 可用包
 
@@ -10,6 +20,41 @@
 - blastfoam (仅支持 OpenFOAM-9)
 - CalculiX-preCICE 适配器
 - OpenFOAM 开发工具箱
+
+## 要求
+
+- Nix 包管理器 (启用 flakes 功能)
+- Git
+
+## 使用二进制缓存
+
+```bash
+# 启用 Cachix 缓存
+cachix use jiaqiwang969
+```
+
+## 快速开始
+
+首先设置 Cachix 缓存：
+```bash
+# 安装 Cachix
+nix-env -iA nixpkgs.cachix
+
+# 使用 openfoam-nix 缓存
+cachix use jiaqiwang969
+```
+
+```bash
+# 克隆仓库
+git clone https://github.com/deal-ii-fluid/openfoam-nix.git
+cd openfoam-nix
+
+# 构建 OpenFOAM
+nix build .#openfoam-9
+
+# 进入开发环境
+nix develop .#openfoam-9
+```
 
 ## 使用方法
 
@@ -75,6 +120,8 @@ nix develop .#openfoam-toolbox
 - 自动设置所有必要的环境变量
 - 支持 FSI (Fluid-Structure Interaction) 求解器
 - 支持压缩流求解器 (blastfoam)
+- 持续集成和自动测试
+- Cachix 二进制缓存支持
 
 ## 开发环境包含
 
@@ -92,6 +139,12 @@ nix develop .#openfoam-toolbox
 - 所有开发环境都会自动设置必要的环境变量
 - 支持 bash 和 fish shell
 - 用户文件默认存储在 `/tmp/OpenFOAM-${version}` 目录
+- 首次构建可能需要较长时间
+- 建议使用 Cachix 以加快构建速度
+
+## 贡献
+
+欢迎提交 Pull Requests 和 Issues！
 
 ## 许可证
 

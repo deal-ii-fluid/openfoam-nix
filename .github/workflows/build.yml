@@ -1,0 +1,57 @@
+name: "Build"
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'nix/**'
+      - 'versions/**'
+      - 'flake.nix'
+      - 'flake.lock'
+
+jobs:
+  build-and-cache:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        package:
+          # Base OpenFOAM
+          - openfoam-9
+          - openfoam-10
+          - openfoam-11
+          # Solvers
+          - blastfoam-9
+          - solids4foam-9
+          - solids4foam-10
+          - solids4foam-11
+          # Adapters
+          - precice-openfoam-9
+          - precice-openfoam-10
+          - precice-openfoam-11
+          - calculix-adapter
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Nix
+      uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+          accept-flake-config = true
+          substituters = https://cache.nixos.org https://jiaqiwang969.cachix.org
+          trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= jiaqiwang969.cachix.org-1:Tcu8cqHpEr5PW0CK8gAQbFIHlIlTcZX+UhLVdJaVJgY=
+          
+    - name: Setup Cachix
+      uses: cachix/cachix-action@v14
+      with:
+        name: jiaqiwang969
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+        skipPush: false
+        skipNixBuild: false
+        
+    - name: Build and Push
+      run: |
+        nix build .#${{ matrix.package }} | cachix push jiaqiwang969 

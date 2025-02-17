@@ -1,0 +1,157 @@
+name: "Test"
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-openfoam:
+    needs: build-and-cache  # 依赖构建作业
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        version: [ "9", "10", "11" ]
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Nix
+      uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+          accept-flake-config = true
+          substituters = https://cache.nixos.org https://jiaqiwang969.cachix.org
+          trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= jiaqiwang969.cachix.org-1:Tcu8cqHpEr5PW0CK8gAQbFIHlIlTcZX+UhLVdJaVJgY=
+          
+    - name: Setup Cachix
+      uses: cachix/cachix-action@v14
+      with:
+        name: jiaqiwang969
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+        skipPush: true
+        skipNixBuild: false
+        
+    - name: Test OpenFOAM Environment
+      run: |
+        nix develop .#openfoam-${{ matrix.version }} --command bash -c '
+          echo "Testing OpenFOAM-${{ matrix.version }} environment"
+          which blockMesh
+          blockMesh -help
+          echo "WM_PROJECT_DIR = $WM_PROJECT_DIR"
+          ls -l $WM_PROJECT_DIR/platforms/$WM_OPTIONS/bin/
+        '
+
+  test-solvers:
+    needs: build-and-cache
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        package:
+          - blastfoam-9
+          - solids4foam-9
+          - solids4foam-10
+          - solids4foam-11
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Nix
+      uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+          accept-flake-config = true
+          
+    - name: Setup Cachix
+      uses: cachix/cachix-action@v14
+      with:
+        name: jiaqiwang969
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+        skipPush: true
+        
+    - name: Test Solver Environment
+      run: |
+        nix develop .#${{ matrix.package }} --command bash -c '
+          echo "Testing ${{ matrix.package }} environment"
+          if [[ "${{ matrix.package }}" == blastfoam* ]]; then
+            echo "BLAST_DIR = $BLAST_DIR"
+            ls -l $BLAST_DIR/lib/
+          elif [[ "${{ matrix.package }}" == solids4foam* ]]; then
+            echo "SOLIDS4FOAM_DIR = $SOLIDS4FOAM_DIR"
+            ls -l $SOLIDS4FOAM_DIR/lib/
+          fi
+        '
+
+  test-adapters:
+    needs: build-and-cache
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        package:
+          - precice-openfoam-9
+          - precice-openfoam-10
+          - precice-openfoam-11
+          - calculix-adapter
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Nix
+      uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+          accept-flake-config = true
+          
+    - name: Setup Cachix
+      uses: cachix/cachix-action@v14
+      with:
+        name: jiaqiwang969
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+        skipPush: true
+        
+    - name: Test Adapter Environment
+      run: |
+        nix develop .#${{ matrix.package }} --command bash -c '
+          echo "Testing ${{ matrix.package }} environment"
+          if [[ "${{ matrix.package }}" == precice-openfoam* ]]; then
+            echo "FOAM_ADAPTER_DIR = $FOAM_ADAPTER_DIR"
+            ls -l $FOAM_ADAPTER_DIR/lib/
+          elif [[ "${{ matrix.package }}" == calculix-adapter ]]; then
+            which ccx_preCICE
+            ccx_preCICE -help || true
+          fi
+        '
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Nix
+      uses: cachix/install-nix-action@v25
+    - name: Check Nix formatting
+      run: nix fmt -- --check .
+    - name: Install nixpkgs-fmt
+      run: nix-env -iA nixpkgs.nixpkgs-fmt
+    - name: Check Nix files formatting
+      run: find . -name "*.nix" -exec nixpkgs-fmt --check {} +
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check Markdown links
+      uses: gaurav-nelson/github-action-markdown-link-check@v1
+      with:
+        use-quiet-mode: 'yes'
+        config-file: '.github/markdown-link-check.json' 
