@@ -6,7 +6,6 @@ on:
 
 jobs:
   test-openfoam:
-    needs: build-and-cache  # 依赖构建作业
     strategy:
       matrix:
         os: [ ubuntu-latest ]
@@ -46,7 +45,6 @@ jobs:
         '
 
   test-solvers:
-    needs: build-and-cache
     strategy:
       matrix:
         os: [ ubuntu-latest ]
@@ -90,7 +88,6 @@ jobs:
         '
 
   test-adapters:
-    needs: build-and-cache
     strategy:
       matrix:
         os: [ ubuntu-latest ]
