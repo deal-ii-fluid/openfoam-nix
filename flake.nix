@@ -10,7 +10,7 @@
 
   outputs = { self, nixpkgs-unstable, nixpkgs-2305, nixpkgs-specific }:
     let
-      supportedSystems = [ "x86_4-linux" "aarch64-linux" ];
+      supportedSystems = [ "aarch64-linux" "x86_64-linux" ];
       forAllSystems = nixpkgs-unstable.lib.genAttrs supportedSystems;
       overlay = import ./nix/overlays.nix;
       versions = builtins.fromJSON (builtins.readFile ./versions/versions.json);
