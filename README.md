@@ -33,6 +33,66 @@
 cachix use jiaqiwang969
 ```
 
+## 多架构支持
+
+本项目支持以下架构：
+- x86_64-linux
+- aarch64-linux
+
+### 构建和推送到 Cachix
+
+1. **构建单个包**
+```bash
+# 在当前架构上构建并推送 OpenFOAM-9
+./push-to-cachix.sh openfoam-9
+
+# 构建其他包
+./push-to-cachix.sh blastfoam-9
+./push-to-cachix.sh solids4foam-9
+./push-to-cachix.sh precice-openfoam-9
+```
+
+2. **构建所有包**
+```bash
+# 在当前架构上构建并推送所有包
+./push-to-cachix.sh
+```
+
+3. **查看可用包列表**
+```bash
+./push-to-cachix.sh help
+```
+
+### 跨架构构建
+
+如果您想在一个架构上构建另一个架构的包：
+
+1. **使用 binfmt 和 QEMU**
+```bash
+# 在 x86_64 上构建 aarch64 包
+sudo apt-get install qemu-user-static binfmt-support
+
+# 或在 NixOS 上
+boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+```
+
+2. **使用远程构建器**
+```bash
+# 配置远程构建器
+nix.buildMachines = [{
+  hostName = "builder";
+  system = "aarch64-linux";
+  # ...其他配置
+}];
+```
+
+### CI/CD
+
+GitHub Actions 工作流程会自动：
+1. 在代码更改时构建并推送到 Cachix (`build.yml`)
+2. 在 PR 和推送时进行测试 (`test.yml`)
+3. 同时支持 x86_64 和 aarch64 架构
+
 ## 快速开始
 
 首先设置 Cachix 缓存：

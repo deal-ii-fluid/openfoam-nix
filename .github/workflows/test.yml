@@ -9,12 +9,19 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
+        arch: [ x86_64, aarch64 ]
         version: [ "9", "10", "11" ]
     
     runs-on: ${{ matrix.os }}
     
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Set up QEMU
+      if: matrix.arch == 'aarch64'
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: arm64
     
     - name: Install Nix
       uses: cachix/install-nix-action@v25
@@ -36,12 +43,11 @@ jobs:
         
     - name: Test OpenFOAM Environment
       run: |
-        nix develop .#openfoam-${{ matrix.version }} --command bash -c '
-          echo "Testing OpenFOAM-${{ matrix.version }} environment"
+        nix develop .#openfoam-${{ matrix.version }}.${matrix.arch}-linux --command bash -c '
+          echo "Testing OpenFOAM-${{ matrix.version }} environment on ${{ matrix.arch }}"
           which blockMesh
           blockMesh -help
           echo "WM_PROJECT_DIR = $WM_PROJECT_DIR"
-          ls -l $WM_PROJECT_DIR/platforms/$WM_OPTIONS/bin/
         '
 
   test-solvers:

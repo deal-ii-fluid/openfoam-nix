@@ -9,7 +9,18 @@ final: prev: {
     '';
   };
 
+  openfoam9 = final.callPackage ./openfoam.nix { 
+    stdenv = prev.ccacheStdenv;
+    versionInfo = (builtins.fromJSON (builtins.readFile ../versions/versions.json))."openfoam-9";
+  };
+
+  openfoam10 = final.callPackage ./openfoam.nix { 
+    stdenv = prev.ccacheStdenv;
+    versionInfo = (builtins.fromJSON (builtins.readFile ../versions/versions.json))."openfoam-10";
+  };
+
   openfoam11 = final.callPackage ./openfoam.nix { 
-    stdenv = prev.ccacheStdenv; 
+    stdenv = prev.ccacheStdenv;
+    versionInfo = (builtins.fromJSON (builtins.readFile ../versions/versions.json))."openfoam-11";
   };
 }

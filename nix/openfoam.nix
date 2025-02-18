@@ -28,6 +28,10 @@ with pkgs;
 let
   # 从 name 中提取版本号
   version = lib.removePrefix "OpenFOAM-" versionInfo.OpenFOAM.name;
+  # 根据系统类型动态设置 BUILD_PLATFORM
+  buildPlatform = if stdenv.hostPlatform.system == "aarch64-linux"
+    then "linuxArm"
+    else "linux";
 in
 stdenv.mkDerivation rec {
   pname = "openfoam";
@@ -62,6 +66,9 @@ stdenv.mkDerivation rec {
     sed -ie 's|SCOTCH_ARCH_PATH=.*$|SCOTCH_ARCH_PATH=${scotch}|' etc/config.sh/scotch
     sed -ie "s|CHANGEME|$out|" etc/bashrc
 
+    # 设置 BUILD_PLATFORM
+    export BUILD_PLATFORM=${buildPlatform}
+    
     # 修改 etc/bashrc，替换所有用户目录相关的设置
     sed -ie 's|\$HOME/\$WM_PROJECT/\$USER|/tmp/OpenFOAM|g' etc/bashrc
     # 注释掉原有的 WM_PROJECT_USER_DIR 设置
@@ -128,7 +135,7 @@ export FOAM_MPI=openmpi-system
 #export WM_MPLIB=SYSTEMOPENMPI
 
 # 编译器和构建选项
-export BUILD_PLATFORM=linuxArm
+export BUILD_PLATFORM=${buildPlatform}
 export WM_COMPILER=Gcc
 export WM_CXX=g++
 export WM_CXXFLAGS="-fPIC -std=c++0x"
@@ -207,7 +214,7 @@ set -gx FOAM_MPI openmpi-system
 #set -gx WM_MPLIB SYSTEMOPENMPI
 
 # 编译器和构建选项
-set -gx BUILD_PLATFORM linuxArm
+set -gx BUILD_PLATFORM ${buildPlatform}
 set -gx WM_COMPILER Gcc
 set -gx WM_CXX g++
 set -gx WM_CXXFLAGS "-fPIC -std=c++0x"

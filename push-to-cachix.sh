@@ -6,20 +6,31 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# 获取当前系统架构
+CURRENT_ARCH=$(uname -m)
+if [ "$CURRENT_ARCH" = "aarch64" ]; then
+    SYSTEM_ARCH="aarch64-linux"
+elif [ "$CURRENT_ARCH" = "x86_64" ]; then
+    SYSTEM_ARCH="x86_64-linux"
+else
+    echo -e "${RED}Unsupported architecture: $CURRENT_ARCH${NC}"
+    exit 1
+fi
+
 # 函数：构建并推送包
 build_and_push() {
     local package="$1"
-    echo -e "${YELLOW}Building and pushing ${package}...${NC}"
-
+    echo -e "${YELLOW}Building and pushing ${package} on ${SYSTEM_ARCH}...${NC}"
+    
     # 清理旧的构建结果
     rm -f result
-
+    
     # 构建包
     nix build .#"${package}"
-
+    
     # 检查构建是否成功
     if [ $? -eq 0 ]; then
-        echo -e "${GREEN}Build successful for ${package}, pushing to cachix...${NC}"
+        echo -e "${GREEN}Build successful for ${package} on ${SYSTEM_ARCH}, pushing to cachix...${NC}"
         # 推送到 cachix
         if cachix push jiaqiwang969 result; then
             echo -e "${GREEN}Successfully pushed ${package} to cachix${NC}"
@@ -29,32 +40,23 @@ build_and_push() {
             return 1
         fi
     else
-        echo -e "${RED}Build failed for ${package}!${NC}"
+        echo -e "${RED}Build failed for ${package} on ${SYSTEM_ARCH}!${NC}"
         return 1
     fi
 }
 
 # 所有需要构建的包
 PACKAGES=(
-    # OpenFOAM 基础包
     "openfoam-9"
     "openfoam-10"
     "openfoam-11"
-
-    # solids4foam 求解器
+    "blastfoam-9"
     "solids4foam-9"
     "solids4foam-10"
     "solids4foam-11"
-
-    # blastfoam 求解器
-    "blastfoam-9"
-
-    # preCICE 适配器
     "precice-openfoam-9"
     "precice-openfoam-10"
     "precice-openfoam-11"
-
-    # CalculiX 适配器
     "calculix-adapter"
 )
 

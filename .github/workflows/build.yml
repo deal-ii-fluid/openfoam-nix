@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
+        arch: [ x86_64, aarch64 ]
         package:
           # Base OpenFOAM
           - openfoam-9
@@ -34,6 +35,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
+    - name: Set up QEMU
+      if: matrix.arch == 'aarch64'
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: arm64
+    
     - name: Install Nix
       uses: cachix/install-nix-action@v25
       with:
@@ -54,4 +61,4 @@ jobs:
         
     - name: Build and Push
       run: |
-        nix build .#${{ matrix.package }} | cachix push jiaqiwang969 
+        nix build .#${{ matrix.package }}.${matrix.arch}-linux | cachix push jiaqiwang969 
